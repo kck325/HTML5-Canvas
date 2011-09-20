@@ -1,0 +1,81 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript">jQuery.noConflict();</script>
+<canvas id="example">
+This text is displayed if your browser does not support HTML5 Canvas.
+</canvas>
+<div id="speedDiv">
+</div>
+ <style> 
+    <!--
+html, body {
+  width:  100%;
+  height: 100%;
+  margin: 0px;
+}    -->
+   </style>
+
+<script type="text/javascript">
+var t,x=10,y=10;
+var timer_is_on=0;
+var isIncreasing = true;
+
+var context = document.getElementById('example').getContext('2d');
+ context.canvas.width  = window.innerWidth;
+ context.canvas.height = window.innerHeight;
+
+function timedCount(speed, angle)
+{
+ context.canvas.width = context.canvas.width;
+ context.fillStyle = "rgb(255,0,0)";
+ var ratio = Math.tan(angle*Math.PI/180);
+ if(ratio < 1){
+  updateYCoordinate(y*ratio > 1 ? 1/(y*ratio) : 1);
+  updateXCoordinate(y*ratio > 1 ? 1 : y*ratio);
+ }else{
+  updateXCoordinate(x/ratio > 1 ? ratio/x : 1);
+  updateYCoordinate(x/ratio > 1 ? 1 : x/ratio);
+ }
+ context.fillRect(x, y, 5, 5);
+ var arbiter = function(){timedCount(speed, angle);};
+ t=setTimeout(arbiter,speed);
+}
+
+var isYincreasing = true;
+function updateYCoordinate(increment){
+ if(y >= context.canvas.height){
+  isYincreasing = false;
+ }else if(y<0){
+   isYincreasing = true;
+ }
+ if(isYincreasing){
+  y = y+increment;
+ }else{ 
+  y = y-increment;
+ }
+}
+
+var isXincreasing = true;
+function updateXCoordinate(increment){
+ if(x >= context.canvas.width){
+  isXincreasing = false;
+ }else if(x<0){
+   isXincreasing = true;
+ }
+ if(isXincreasing){
+  x = x+increment;
+ }else{ 
+  x = x-increment;
+ }
+}
+
+function speedDaemon(){
+ clearTimeout(t);
+ var speed = Math.floor(Math.random()*99);
+ var angle = Math.floor(Math.random()*360);
+ jQuery("#speedDiv").html("Current Speed : " + speed + " and Angle : " + angle);
+ var t1 = setTimeout("speedDaemon()", 10000);
+ timedCount(100-speed, angle);
+}
+
+speedDaemon();
+</script>
